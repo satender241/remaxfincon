@@ -81,11 +81,10 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Hard-clamp horizontal overflow at root level */
+    /* Hard-clamp horizontal overflow everywhere */
     html {
       scroll-behavior: smooth;
-      overflow-x: hidden;
-      max-width: 100vw;
+      overflow-x: clip;          /* clip is stronger than hidden for fixed children */
     }
 
     body {
@@ -93,17 +92,29 @@
       color: var(--gray-700);
       background: var(--white);
       overflow-x: hidden;
-      max-width: 100vw;
+      width: 100%;
       line-height: 1.6;
     }
 
+    /* Global: all text wraps, no element wider than its parent */
+    p, span, li, a, h1, h2, h3, h4, h5, h6, div {
+      overflow-wrap: break-word;
+      word-break: break-word;
+      min-width: 0;
+    }
+
+    /* All flex/grid children: prevent blowout */
+    .container > *, section > *, [class*="grid"] > * {
+      min-width: 0;
+    }
+
     h1, h2, h3, h4 {
-      /* Georgia renders instantly; Playfair Display swaps in once loaded */
       font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
       line-height: 1.2;
+      overflow-wrap: break-word;
     }
     a { text-decoration: none; color: inherit; }
-    img { max-width: 100%; }
+    img { max-width: 100%; display: block; }
 
     .container {
       max-width: 1200px;
@@ -145,8 +156,9 @@
     .section-subtitle {
       font-size: 1.05rem;
       color: var(--gray-500);
-      max-width: 600px;
+      max-width: min(600px, 100%);
       line-height: 1.7;
+      overflow-wrap: break-word;
     }
 
     .section-header { margin-bottom: 56px; }
@@ -806,10 +818,11 @@
     .about-image-card {
       background: var(--gradient-hero);
       border-radius: var(--radius);
-      padding: 48px;
+      padding: 40px 32px;
       color: var(--white);
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     .about-image-card::before {
@@ -1712,8 +1725,8 @@
 
     .float-btn:hover { transform: scale(1.1); }
 
-    .float-btn-wa { background: #25D366; color: var(--white); }
-    .float-btn-call { background: var(--gradient-gold); color: var(--navy); }
+    .float-btn-wa { background: #25D366; color: var(--white); isolation: isolate; }
+    .float-btn-call { background: var(--gradient-gold); color: var(--navy); isolation: isolate; }
 
     .float-tooltip {
       position: absolute;
@@ -1786,8 +1799,8 @@
     ============================== */
     #scroll-top {
       position: fixed;
-      bottom: 104px;
-      right: 24px;
+      bottom: 32px;
+      left: 24px;           /* LEFT side — away from floating buttons on right */
       width: 44px;
       height: 44px;
       background: var(--navy);
@@ -1803,7 +1816,7 @@
       transform: translateY(10px);
       transition: var(--transition);
       z-index: 800;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.12);
     }
 
     #scroll-top.visible { opacity: 1; transform: translateY(0); }
@@ -1924,7 +1937,7 @@
       .floating-buttons { right: 16px; bottom: 24px; }
       .float-btn { width: 50px; height: 50px; font-size: 1.2rem; }
       .float-tooltip { display: none; }
-      #scroll-top { right: 16px; }
+      #scroll-top { left: 16px; bottom: 24px; }
     }
 
     /* ── Small phone: ≤ 480px ── */
@@ -2231,20 +2244,18 @@
             <p class="about-card-text">
               We combine financial expertise with deep market knowledge to deliver solutions that actually work. From raising capital to ensuring regulatory compliance — we handle it all under one roof.
             </p>
-            <div style="margin-top:32px; display:flex; gap:24px; position:relative; z-index:1;">
-              <div>
-                <div style="font-size:1.5rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif;">15+</div>
-                <div style="font-size:0.78rem; color:rgba(255,255,255,0.55);">Years of Excellence</div>
+            <div style="margin-top:28px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; position:relative; z-index:1;">
+              <div style="text-align:center; padding:10px 4px; border-right:1px solid rgba(255,255,255,0.12);">
+                <div style="font-size:1.3rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif; white-space:nowrap;">15+</div>
+                <div style="font-size:0.7rem; color:rgba(255,255,255,0.55); margin-top:3px;">Years</div>
               </div>
-              <div style="width:1px; background:rgba(255,255,255,0.15);"></div>
-              <div>
-                <div style="font-size:1.5rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif;">₹500Cr+</div>
-                <div style="font-size:0.78rem; color:rgba(255,255,255,0.55);">Raised for Clients</div>
+              <div style="text-align:center; padding:10px 4px; border-right:1px solid rgba(255,255,255,0.12);">
+                <div style="font-size:1.3rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif; white-space:nowrap;">₹500Cr+</div>
+                <div style="font-size:0.7rem; color:rgba(255,255,255,0.55); margin-top:3px;">Raised</div>
               </div>
-              <div style="width:1px; background:rgba(255,255,255,0.15);"></div>
-              <div>
-                <div style="font-size:1.5rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif;">200+</div>
-                <div style="font-size:0.78rem; color:rgba(255,255,255,0.55);">Satisfied Clients</div>
+              <div style="text-align:center; padding:10px 4px;">
+                <div style="font-size:1.3rem; font-weight:800; color:var(--gold-light); font-family:'Playfair Display',serif; white-space:nowrap;">200+</div>
+                <div style="font-size:0.7rem; color:rgba(255,255,255,0.55); margin-top:3px;">Clients</div>
               </div>
             </div>
           </div>
