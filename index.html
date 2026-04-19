@@ -80,14 +80,20 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+
+    /* Hard-clamp horizontal overflow at root level */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
 
     body {
-      /* System font stack renders instantly; Inter swaps in once loaded */
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--gray-700);
       background: var(--white);
       overflow-x: hidden;
+      max-width: 100vw;
       line-height: 1.6;
     }
 
@@ -682,6 +688,8 @@
       padding: 10px 0;
       border-top: 1px solid rgba(255,255,255,0.06);
       margin-top: 4px;
+      max-width: 100%;
+      contain: layout;
     }
 
     .ticker-track {
@@ -689,6 +697,7 @@
       gap: 32px;
       animation: tickerScroll 20s linear infinite;
       width: max-content;
+      will-change: transform;
     }
 
     @keyframes tickerScroll {
@@ -1833,90 +1842,130 @@
 
     /* ── Tablet: ≤ 900px ── */
     @media (max-width: 900px) {
-      /* Hero stacks: dashboard below copy */
-      #hero { padding: 90px 0 60px; min-height: auto; }
-      .hero-inner {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .hero-inner > * { overflow: visible; }
-      .hero-content { max-width: 100%; }
-      .hero-dashboard { max-width: 100%; }
-      .hero-title { font-size: clamp(2.4rem, 5vw, 3rem); }
-      .hero-strip { gap: 20px; }
+      #hero { padding: 88px 0 56px; min-height: auto; }
+      .hero-inner { grid-template-columns: 1fr; gap: 36px; }
+      .hero-inner > * { overflow: hidden; min-width: 0; }
+      .hero-content { overflow: visible; max-width: 100%; }
+      .hero-dashboard { max-width: 100%; width: 100%; }
+      .hero-title { font-size: clamp(2.2rem, 5vw, 3rem); }
+      .hero-strip { gap: 16px; }
       .hero-strip-div { display: none; }
       .dash-kpi-row { grid-template-columns: repeat(3, 1fr); }
-      /* Other sections */
-      .about-grid { grid-template-columns: 1fr; gap: 60px; }
+      .about-grid { grid-template-columns: 1fr; gap: 56px; }
       .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
       .contact-grid { grid-template-columns: 1fr; gap: 40px; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .why-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* ── Mobile landscape / large phone: ≤ 768px ── */
+    /* ── Mobile: ≤ 768px ── */
     @media (max-width: 768px) {
-      .section-padding { padding: 56px 0; }
-      .container { padding: 0 20px; }
+      .section-padding { padding: 52px 0; }
+      .container { padding: 0 18px; }
 
       /* Nav */
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
 
       /* Hero */
-      #hero { padding: 80px 0 48px; }
-      .hero-title { font-size: 2.4rem; }
-      .hero-description { font-size: 0.95rem; }
-      .hero-actions { gap: 12px; }
-      .hero-strip { gap: 16px; }
-      .hero-strip-val { font-size: 1.25rem; }
-      .dash-kpi-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .dash-kpi { padding: 12px; }
-      .dash-kpi-val { font-size: 0.95rem; }
-      .chart-wrap { height: 100px; }
+      #hero { padding: 76px 0 44px; }
+      .hero-eyebrow-text { font-size: 0.68rem; letter-spacing: 0.12em; }
+      .hero-title { font-size: 2.2rem; line-height: 1.1; }
+      .hero-description { font-size: 0.92rem; margin-bottom: 28px; }
+      .hero-actions { gap: 10px; margin-bottom: 32px; }
+      .btn { padding: 12px 24px; font-size: 0.88rem; }
 
-      /* Sections */
+      /* Hero strip — 2×2 grid */
+      .hero-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 24px;
+        padding-top: 24px;
+      }
+      .hero-strip-div { display: none; }
+      .hero-strip-val { font-size: 1.3rem; }
+      .hero-strip-lbl { font-size: 0.68rem; }
+
+      /* Dashboard cards */
+      .dash-card { padding: 16px; }
+      .dash-revenue-value { font-size: 1.5rem; }
+      .dash-revenue-label { font-size: 0.68rem; }
+      .dash-revenue-period { font-size: 0.65rem; }
+      .dash-revenue-change { font-size: 0.68rem; padding: 3px 8px; }
+      .chart-wrap { height: 90px; }
+      .chart-labels span { font-size: 0.6rem; }
+      .dash-kpi-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .dash-kpi { padding: 11px 10px; }
+      .dash-kpi-icon { width: 28px; height: 28px; font-size: 0.75rem; margin-bottom: 8px; }
+      .dash-kpi-val { font-size: 0.9rem; }
+      .dash-kpi-lbl { font-size: 0.58rem; }
+      .dash-kpi-delta { font-size: 0.58rem; }
+      .dash-port-title { font-size: 0.65rem; }
+      .dash-port-total { font-size: 0.72rem; }
+      .bar-name { font-size: 0.65rem; }
+      .bar-pct { font-size: 0.62rem; }
+      .ticker-item { font-size: 0.65rem; gap: 6px; }
+
+      /* Other sections */
       .services-grid { grid-template-columns: 1fr; }
       .products-grid { grid-template-columns: 1fr; }
       .why-grid { grid-template-columns: 1fr; }
       .testimonials-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+      .stat-card { padding: 28px 16px; }
+      .stat-number { font-size: 2.4rem; }
       .form-row { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-      .contact-form { padding: 28px 20px; }
-      .about-badge-floating { right: 16px; }
-
-      /* Footer */
-      .footer-bottom { flex-direction: column; text-align: center; gap: 12px; }
-      .footer-bottom-links { justify-content: center; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .contact-form { padding: 24px 18px; }
+      .about-badge-floating { right: 12px; padding: 12px 16px; }
+      .about-badge-content strong { font-size: 1rem; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 10px; }
+      .footer-bottom-links { justify-content: center; flex-wrap: wrap; gap: 12px; }
+      .floating-buttons { right: 16px; bottom: 24px; }
+      .float-btn { width: 50px; height: 50px; font-size: 1.2rem; }
+      .float-tooltip { display: none; }
+      #scroll-top { right: 16px; }
     }
 
     /* ── Small phone: ≤ 480px ── */
     @media (max-width: 480px) {
-      .container { padding: 0 16px; }
-      .hero-title { font-size: 2rem; }
+      .container { padding: 0 14px; }
+      .hero-title { font-size: 1.95rem; }
+      .hero-description { font-size: 0.88rem; }
       .hero-actions { flex-direction: column; }
       .hero-actions .btn { width: 100%; justify-content: center; }
-      .hero-strip { flex-wrap: wrap; gap: 12px; }
-      .hero-strip-item { min-width: 40%; }
 
-      /* Dashboard on small phones: compress */
+      /* Strip stays 2×2 */
+      .hero-strip { grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+      .hero-strip-val { font-size: 1.2rem; }
+
+      /* KPIs go 2-col on tiny screens */
       .dash-kpi-row { grid-template-columns: 1fr 1fr; }
       .dash-kpi:last-child { grid-column: 1 / -1; }
-      .dash-revenue-value { font-size: 1.4rem; }
+      .dash-revenue-value { font-size: 1.3rem; }
+      .dash-revenue-header { flex-direction: column; gap: 8px; align-items: flex-start; }
       .dash-port-header { flex-direction: column; align-items: flex-start; gap: 4px; }
 
-      /* Stats section */
+      /* Stats */
       .stats-grid { grid-template-columns: 1fr 1fr; }
-      .stat-number { font-size: 2.2rem; }
+      .stat-number { font-size: 2rem; }
+      .stat-icon { width: 52px; height: 52px; font-size: 1.2rem; }
 
-      /* Why grid */
+      /* About features */
+      .about-features { grid-template-columns: 1fr; }
+      .about-badge-floating { position: static; margin-top: 20px; box-shadow: var(--shadow-md); }
+
+      /* Misc */
       .why-grid { grid-template-columns: 1fr; }
       .testimonials-grid { grid-template-columns: 1fr; }
-      .about-features { grid-template-columns: 1fr; }
-      .footer-bottom-links { flex-direction: column; gap: 8px; }
+      .footer-bottom-links { flex-direction: column; gap: 8px; align-items: center; }
       .financing-tabs { gap: 6px; }
-      .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
+      .tab-btn { padding: 8px 12px; font-size: 0.78rem; }
+      .trust-bar-inner { gap: 16px; }
+      .trust-item { font-size: 0.78rem; }
+      .hero-strip { padding-top: 20px; }
+      .section-padding { padding: 44px 0; }
+      .section-title { font-size: 1.7rem; }
     }
   </style>
 </head>
