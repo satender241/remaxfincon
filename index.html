@@ -6,16 +6,40 @@
   <title>RemaxFinCon — Your Trusted Financial Growth Partner</title>
   <meta name="description" content="RemaxFinCon offers comprehensive financial services including investment banking, lending solutions, MSME loans, GST compliance, and business advisory across India." />
 
-  <!-- Fonts -->
+  <!-- DNS prefetch for all external origins -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+
+  <!-- Preconnect only the two font origins (critical path) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts: trimmed weights + display=swap (non-blocking) -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;800&display=swap"
+    onload="this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;800&display=swap" />
+  </noscript>
 
-  <!-- AOS Animations -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <!-- Font Awesome: load async (non-blocking) -->
+  <link rel="preload" as="style"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    onload="this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </noscript>
+
+  <!-- AOS: load async (non-blocking) -->
+  <link rel="preload" as="style"
+    href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+    onload="this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  </noscript>
 
   <style>
     /* ==============================
@@ -50,14 +74,19 @@
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
+      /* System font stack renders instantly; Inter swaps in once loaded */
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--gray-700);
       background: var(--white);
       overflow-x: hidden;
       line-height: 1.6;
     }
 
-    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+    h1, h2, h3, h4 {
+      /* Georgia renders instantly; Playfair Display swaps in once loaded */
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      line-height: 1.2;
+    }
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; }
 
@@ -2923,12 +2952,14 @@
   <!-- ==============================
        SCRIPTS
   ============================== -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+  <script defer>
     /* =============================================
-       AOS
+       AOS — init after defer loads it
     ============================================= */
-    AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof AOS !== 'undefined') AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+    });
 
     /* =============================================
        NAVBAR
