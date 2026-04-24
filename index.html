@@ -2095,16 +2095,16 @@
         <!-- RIGHT: Financial Dashboard -->
         <div class="hero-dashboard">
 
-          <!-- Revenue Area Chart Card -->
+          <!-- Loan Approvals Growth Chart Card -->
           <div class="dash-card">
             <div class="dash-revenue-header">
               <div>
-                <div class="dash-revenue-label">Total Revenue Facilitated</div>
-                <div class="dash-revenue-value">₹<span id="rev-counter">0</span> Cr</div>
-                <div class="dash-revenue-period">FY 2019 – 2025 &nbsp;·&nbsp; <span class="live-dot"></span> Live</div>
+                <div class="dash-revenue-label">Loan Cases Approved</div>
+                <div class="dash-revenue-value"><span id="rev-counter">0</span><span style="font-size:1rem;font-weight:600;color:rgba(255,255,255,0.6);margin-left:4px;">Cases</span></div>
+                <div class="dash-revenue-period">FY 2019 – 2025 &nbsp;·&nbsp; <span class="live-dot"></span> Growing</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-                <span class="dash-revenue-change"><i class="fas fa-arrow-up" style="font-size:0.6rem;"></i> +34.2%</span>
+                <span class="dash-revenue-change"><i class="fas fa-arrow-up" style="font-size:0.6rem;"></i> +41% YoY</span>
                 <span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">vs last year</span>
               </div>
             </div>
@@ -3101,8 +3101,8 @@
       const ctx = canvas.getContext('2d');
       const W = canvas.width, H = canvas.height;
 
-      // Revenue data points (₹ Cr) FY19–FY25
-      const raw = [38, 62, 85, 140, 220, 370, 500];
+      // Loan cases approved FY19–FY25
+      const raw = [12, 22, 35, 58, 95, 148, 210];
       const max = Math.max(...raw) * 1.1;
       const pad = { l: 8, r: 8, t: 12, b: 8 };
 
@@ -3270,6 +3270,7 @@
     ============================================= */
     window.addEventListener('load', () => {
       drawAreaChart();
+      animateRevCounter(210);
       animateStripCounter('ctr-clients',  200, '',  '+',  2000);
       animateStripCounter('ctr-approval',  48, '',  'h',  1600);
       animateStripCounter('ctr-years',     15, '',  '+',  1800);
