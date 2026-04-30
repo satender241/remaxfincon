@@ -42,13 +42,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   </noscript>
 
-  <!-- AOS: load async (non-blocking) -->
-  <link rel="preload" as="style"
-    href="https://unpkg.com/aos@2.3.1/dist/aos.css"
-    onload="this.rel='stylesheet'" />
-  <noscript>
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-  </noscript>
 
   <style>
     /* ==============================
@@ -1980,6 +1973,12 @@
       .section-padding { padding: 44px 0; }
       .section-title { font-size: 1.7rem; }
     }
+    /* AOS replacement — no external dependency */
+    [data-aos] { opacity: 0; transition: opacity .7s ease, transform .7s cubic-bezier(.33,1,.68,1); }
+    [data-aos="fade-up"]    { transform: translateY(24px); }
+    [data-aos="fade-right"] { transform: translateX(-24px); }
+    [data-aos="fade-left"]  { transform: translateX(24px); }
+    [data-aos].ao-in        { opacity: 1; transform: none; }
   </style>
 </head>
 <body>
@@ -3018,13 +3017,19 @@
   <!-- ==============================
        SCRIPTS
   ============================== -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
   <script defer>
-    /* =============================================
-       AOS — init after defer loads it
-    ============================================= */
+    /* AOS replacement — IntersectionObserver */
     document.addEventListener('DOMContentLoaded', function() {
-      if (typeof AOS !== 'undefined') AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+      const obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          const delay = parseInt(el.dataset.aosDelay || 0);
+          setTimeout(function() { el.classList.add('ao-in'); }, delay);
+          obs.unobserve(el);
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+      document.querySelectorAll('[data-aos]').forEach(function(el) { obs.observe(el); });
     });
 
     /* =============================================
@@ -3033,7 +3038,7 @@
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 60);
-    });
+    }, { passive: true });
 
     /* =============================================
        SCROLL-TO-TOP
@@ -3041,7 +3046,7 @@
     const scrollTopBtn = document.getElementById('scroll-top');
     window.addEventListener('scroll', () => {
       scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
-    });
+    }, { passive: true });
 
     /* =============================================
        MOBILE NAV
@@ -3088,7 +3093,7 @@
       navLinks.forEach(l => {
         l.style.color = l.getAttribute('href') === '#' + current ? 'var(--gold-light)' : '';
       });
-    });
+    }, { passive: true });
 
     /* =============================================
        HERO AREA CHART  (pure Canvas, no library)
